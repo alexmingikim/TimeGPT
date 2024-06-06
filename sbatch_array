@@ -1,0 +1,8 @@
+#!/bin/sh
+
+# $1 is the slurm script
+# $2 is the file containing the executables
+
+jobsN=($(wc $2))
+
+sbatch --array=1-$jobsN $1 $2

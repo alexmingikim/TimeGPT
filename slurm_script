@@ -1,0 +1,15 @@
+#!/bin/bash -e
+#SBATCH --job-name=TimeGPT
+#SBATCH --partition=large
+#SBATCH --time=02:00:00
+#SBATCH --mem-per-cpu=2GB # Memory per logical CPU
+#SBATCH --account uoa04096
+
+#SBATCH --error=./jobs/%A_%a.err
+#SBATCH --output=./jobs/%A_%a.out
+
+module load PyTorch/1.12.1-gimkl-2022a-Python-3.10.5-CUDA-11.6.2
+
+export execs=`sed -n "$SLURM_ARRAY_TASK_ID"p $1`
+
+$execs
