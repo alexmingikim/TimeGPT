@@ -59,49 +59,55 @@ timegpt_fcst_df = nixtla_client.forecast(
     target_col='ILITOTAL'
 )
 
-### Evaluation
+# Save forecasts and evaluation metrics 
+horizons = [1,4,13,26,52]
 
-# Merge forecasted values with test set for evaluation
-test_data = test_data.head(52)
-test_data['TimeGPT'] = timegpt_fcst_df['TimeGPT'].values
+for horizon in horizons:
+    ### Save forecasts
+    # Define path
+    output_dir = f"output/{state}/{horizon}weeks/forecasts"
+    output_file = f"{output_dir}/{split_week}.csv"
 
-# Calculate evaluation metrics
-rmse = np.sqrt(mean_squared_error(test_data['ILITOTAL'], test_data['TimeGPT']))
-mae = mean_absolute_error(test_data['ILITOTAL'], test_data['TimeGPT'])
-mape = mean_absolute_percentage_error(test_data['ILITOTAL'], test_data['TimeGPT'])
+    # Create directory if it doesn't exist
+    os.makedirs(output_dir, exist_ok=True)
 
-# Define evaluation metrics
-evaluation_metrics = {
-    'Split_week': split_week,
-    'RMSE': rmse,
-    'MAE': mae,
-    'MAPE': mape
-}
+    # Extract first n weeks of forecasts
+    forecasts = timegpt_fcst_df.head(horizon)
 
-### Save predictions and evaluations
+    # Save DataFrame to csv 
+    forecasts.to_csv(output_file, index=False)
 
-# Define path
-output_dir = f"output/{state}/predictions"
-output_file = f"{output_dir}/{split_week}_predictions.csv"
-eval_dir = f"output/{state}/evaluation"
-eval_file = f"{eval_dir}/evaluation.csv"
+    ### Evaluation
+    # Merge forecasts with test set for evaluation
+    evaluation = test_data.head(horizon).copy()
+    evaluation.loc[:, 'TimeGPT'] = forecasts['TimeGPT'].values
 
-# Create directory if it doesn't exist
-os.makedirs(output_dir, exist_ok=True)
-os.makedirs(eval_dir, exist_ok=True)
+    # Calculate evaluation metrics
+    rmse = np.sqrt(mean_squared_error(evaluation['ILITOTAL'], evaluation['TimeGPT']))
+    mae = mean_absolute_error(evaluation['ILITOTAL'], evaluation['TimeGPT'])
+    mape = mean_absolute_percentage_error(evaluation['ILITOTAL'], evaluation['TimeGPT'])
 
-# Save prediction DataFrame to CSV
-timegpt_fcst_df.to_csv(output_file, index=False)
+    # Define evaluation metrics
+    evaluation_metrics = {
+        'Split_week': split_week,
+        'RMSE': rmse,
+        'MAE': mae,
+        'MAPE': mape
+    }
 
-# Check if evaluation file exists
-if os.path.exists(eval_file):
-    # Read existing evaluation file
-    eval_df = pd.read_csv(eval_file)
-    # Append new evaluation metrics as new row
-    eval_df = eval_df.append(evaluation_metrics, ignore_index=True)
-else:
+    ### Save evaluation metrics
+    # Define path
+    eval_dir = f"output/{state}/{horizon}weeks/evaluation"
+    eval_file = f"{eval_dir}/{split_week}.csv"
+
+    # Create directory if it doesn't exist
+    os.makedirs(eval_dir, exist_ok=True)
+
     # Create new DataFrame with evaluation metrics
     eval_df = pd.DataFrame(evaluation_metrics, index=[0])
 
-# Save evaluation DataFrame to CSV
-eval_df.to_csv(eval_file, index=False)
+    # Save evaluation DataFrame to CSV file
+    eval_df.to_csv(eval_file, index=False)
+    
+
+
