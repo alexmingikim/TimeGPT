@@ -12,6 +12,6 @@ for state in states:
             f"srun --unbuffered python timegpt_script.py {state} {date.strftime('%Y-%m-%d')}"
         )
 
-# Save command strings to a text file
+# Save command strings to a text file with an empty line at the end
 with open("execs/train_models", "w") as file:
-    file.write("\n".join(commands))
+    file.write("\n".join(commands) + "\n")
