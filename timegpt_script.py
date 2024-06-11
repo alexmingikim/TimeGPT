@@ -1,5 +1,6 @@
 import pandas as pd
 import numpy as np
+import re
 from dotenv import load_dotenv
 load_dotenv()
 from nixtla import NixtlaClient
@@ -12,6 +13,9 @@ from sklearn.metrics import mean_squared_error, mean_absolute_error, mean_absolu
 # Get arguments
 state = argv[1]
 split_week = datetime.strptime(argv[2], "%Y-%m-%d").date()
+
+# Use a regular expression to add a space before any uppercase letter that is not at the start
+state = re.sub(r'(?<!^)(?=[A-Z])', ' ', state)
 
 # Import data 
 df = pd.read_csv("./data/all-states-2010-2024.csv", skiprows=1)
@@ -65,7 +69,7 @@ horizons = [1,4,13,26,52]
 for horizon in horizons:
     ### Save forecasts
     # Define path
-    output_dir = f"output/{state}/{horizon}weeks/forecasts"
+    output_dir = f"output/{state}/{horizon}week/forecasts"
     output_file = f"{output_dir}/{split_week}.csv"
 
     # Create directory if it doesn't exist
