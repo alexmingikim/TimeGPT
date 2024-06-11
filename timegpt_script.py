@@ -14,7 +14,7 @@ state = argv[1]
 split_week = datetime.strptime(argv[2], "%Y-%m-%d").date()
 
 # Import data 
-df = pd.read_csv("../data/all-states-2010-2024.csv", skiprows=1)
+df = pd.read_csv("./data/all-states-2010-2024.csv", skiprows=1)
 
 ### Preprocessing
 
