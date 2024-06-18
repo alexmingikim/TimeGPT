@@ -1,7 +1,11 @@
 import pandas as pd
 
+# Define start and end dates
+start_date = "2017-06-01"
+end_date = "2019-06-01"
+
 # Generate date range for each week of 2017 and 2019
-weeks = pd.date_range(start="2017-06-01", end="2019-06-01", freq="W")
+weeks = pd.date_range(start=start_date, end=end_date, freq="W-MON")
 states = ["Georgia", "NewYork", "Oregon", "Texas", "Wyoming"]
 
 # Generate command strings for each date
