@@ -3,7 +3,8 @@ import pandas as pd
 
 # Define states and forecast horizons
 # TODO: specify states and horizons as environmental variables
-states = ['Georgia', 'New York', 'Oregon', 'Texas', 'Wyoming'] #
+# states = ['Georgia', 'New York', 'Oregon', 'Texas', 'Wyoming'] #
+states = ['Texas']
 horizons = ['1week', '4week', '13week', '26week', '52week'] #
 
 # Loop over each forecast horizon
