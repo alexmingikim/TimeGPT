@@ -24,12 +24,15 @@ for state in states:
                 
                 # Read CSV file into a DataFrame
                 df = pd.read_csv(filepath)
+
+                # Extract MAPE value (assuming it's in the first row and MAPE column)
+                mape_value = df.loc[0, 'MAPE'] #
                 
                 # Extract RMSE value (assuming it's in the first row and RMSE column)
                 rmse_value = df.loc[0, 'RMSE'] #
                 
                 # Append the data to the list
-                data.append({'WEEK_START': week_start, 'TimeGPT': rmse_value})
+                data.append({'WEEK_START': week_start, 'RMSE': rmse_value, 'MAPE': mape_value})
 
         # Create DataFrame
         result_df = pd.DataFrame(data)
@@ -40,17 +43,29 @@ for state in states:
         # Sort DataFrame by WEEK_START
         result_df = result_df.sort_values('WEEK_START')
 
-        # Save the DataFrame to a CSV file
-        output_path = os.path.join(directory, f'summmary_evaluation_{horizon}.csv')
+        # Save DataFrame to a CSV file
+        output_path = os.path.join(directory, f'summmary_evaluation_MAPE+RMSE.csv')
         result_df.to_csv(output_path, index=False)
 
-        # Plot the DataFrame
-        plt.figure(figsize=(10, 5))
-        plt.plot(result_df['WEEK_START'], result_df['TimeGPT'], marker='o')
-        plt.xlabel('Week Start')
-        plt.ylabel('RMSE (TimeGPT)')
-        plt.title('RMSE over Time')
-        plt.xticks(rotation=45)
+        # Plot DataFrame
+        fig, ax1 = plt.subplots(figsize=(10, 5))
+
+        # Plot RMSE
+        ax1.set_xlabel('Week Start')
+        ax1.set_ylabel('RMSE', color='tab:blue')
+        ax1.plot(result_df['WEEK_START'], result_df['RMSE'], color='tab:blue', marker='o', label='RMSE')
+        ax1.tick_params(axis='y', labelcolor='tab:blue')
+
+        # Create second y-axis to plot MAPE
+        ax2 = ax1.twinx()
+        ax2.set_ylabel('MAPE', color='tab:red')
+        ax2.plot(result_df['WEEK_START'], result_df['MAPE'], color='tab:red', marker='x', label='MAPE')
+        ax2.tick_params(axis='y', labelcolor='tab:red')
+
+        # Add title and grid
+        plt.title(f'RMSE and MAPE over Time for {state} - {horizon}')
+        fig.tight_layout()
         plt.grid(True)
-        plt.tight_layout()
+
+        # Show plot
         plt.show()
