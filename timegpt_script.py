@@ -22,8 +22,8 @@ df = pd.read_csv("./data/all-states-2010-2024.csv", skiprows=1)
 
 ### Preprocessing
 
-# Create WEEK_START column
-df["WEEK_START"] = pd.to_datetime(
+# Create Split_week column
+df["Split_week"] = pd.to_datetime(
     df["YEAR"].astype(str) + df["WEEK"].astype(str) + "-1", format="%G%V-%u"
 ).dt.normalize()
 
@@ -31,10 +31,10 @@ df["WEEK_START"] = pd.to_datetime(
 filtered_df = df[df["REGION"] == state]
 
 # Drop irrelevant columns
-filtered_df = filtered_df[["WEEK_START", "ILITOTAL"]]
+filtered_df = filtered_df[["Split_week", "ILITOTAL"]]
 
 # Drop duplicates
-filtered_df = filtered_df.drop_duplicates(subset=["WEEK_START"], keep="first")
+filtered_df = filtered_df.drop_duplicates(subset=["Split_week"], keep="first")
 
 # Reset index
 filtered_df = filtered_df.reset_index(drop=True)
@@ -46,10 +46,10 @@ filtered_df["ILITOTAL"] = pd.to_numeric(filtered_df["ILITOTAL"])
 split_week_dt = pd.to_datetime(split_week)
 
 # Use split week to create training set
-train_data = filtered_df[filtered_df["WEEK_START"] < split_week_dt]
+train_data = filtered_df[filtered_df["Split_week"] < split_week_dt]
 
 # Create test set
-test_data = filtered_df[filtered_df["WEEK_START"] >= split_week_dt]
+test_data = filtered_df[filtered_df["Split_week"] >= split_week_dt]
 
 ### Forecasting
 quantiles = [0.05, 0.1, 0.15, 0.2, 0.25, 0.3, 0.35, 0.4, 0.45, 0.5, 0.55, 0.6, 0.65, 0.7, 0.75, 0.8, 0.85, 0.9, 0.95]
@@ -59,7 +59,7 @@ timegpt_fcst_df = nixtla_client.forecast(
     quantiles=quantiles,
     h=52, 
     freq='W-MON', 
-    time_col='WEEK_START', 
+    time_col='Split_week', 
     target_col='ILITOTAL'
 )
 
@@ -94,9 +94,9 @@ for horizon in horizons:
     # Define evaluation metrics
     evaluation_metrics = {
         'Split_week': split_week,
-        'RMSE': rmse,
         'MAE': mae,
-        'MAPE': mape
+        'MAPE': mape,
+        'RMSE': rmse
     }
 
     ### Save evaluation metrics
