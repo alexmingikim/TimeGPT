@@ -93,7 +93,7 @@ for horizon in horizons:
 
     # Define evaluation metrics
     evaluation_metrics = {
-        'Split_week': split_week,
+        'WEEK_START': split_week,
         'MAE': mae,
         'MAPE': mape,
         'RMSE': rmse
