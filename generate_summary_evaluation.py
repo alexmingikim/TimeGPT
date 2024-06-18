@@ -20,7 +20,7 @@ for state in states:
             if file.endswith('.csv'):
                 file_path = os.path.join(eval_dir, file)
                 df = pd.read_csv(file_path)
-                metrics.append(df[['RMSE', 'MAE', 'MAPE']]) #
+                metrics.append(df[['MAE', 'MAPE', 'RMSE']]) #
         
         # Concatenate all dataframes
         if metrics:
