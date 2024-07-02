@@ -2,6 +2,7 @@ import pandas as pd
 import numpy as np
 from torchmetrics.functional import symmetric_mean_absolute_percentage_error
 import torch
+import re
 from dotenv import load_dotenv
 load_dotenv()
 from nixtla import NixtlaClient
