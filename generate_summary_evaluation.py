@@ -4,14 +4,14 @@ import pandas as pd
 # Define states and forecast horizons
 # TODO: specify states and horizons as environmental variables
 # states = ['Georgia', 'New York', 'Oregon', 'Texas', 'Wyoming'] #
-states = ['Texas']
+states = ["California", "Minnesota", "Nevada", "Utah", "Virginia"] #
 horizons = ['1week', '4week', '13week', '26week', '52week'] #
 
 # Loop over each forecast horizon
 for state in states: 
     for horizon in horizons:
-        # root_dir = f'output/{state}' #
-        root_dir = f'output/covariates/{state}'
+        root_dir = f'output/{state}' #
+        # root_dir = f'output/covariates/{state}'
         eval_dir = os.path.join(root_dir, horizon, 'evaluation')
         
         # Read all csv files in evaluation directory
@@ -20,7 +20,7 @@ for state in states:
             if file.endswith('.csv'):
                 file_path = os.path.join(eval_dir, file)
                 df = pd.read_csv(file_path)
-                metrics.append(df[['MAE', 'MAPE', 'RMSE']]) #
+                metrics.append(df[['MAE', 'MAPE', 'sMAPE', 'RMSE', 'MASE']]) #
         
         # Concatenate all dataframes
         if metrics:
