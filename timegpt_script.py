@@ -33,6 +33,13 @@ def main():
     # Import data 
     df = pd.read_csv("./data/all-states-2010-2024.csv", skiprows=1)
 
+    # Import school holidays
+    school_holidays = pd.read_csv("./data/school_holidays.csv")
+
+    # Convert WEEK_START column to datetime
+    school_holidays['WEEK_START'] = pd.to_datetime(school_holidays['WEEK_START'], dayfirst=True)
+    school_holidays.head()
+
     ### Preprocessing
 
     # Create Split_week column
@@ -64,6 +71,13 @@ def main():
     # Create test set
     test_data = filtered_df[filtered_df["WEEK_START"] >= split_week_dt]
 
+    # Create future dataframe with exogenous features
+    future_holidays = school_holidays[school_holidays["WEEK_START"] >= split_week_dt].head(52)
+
+    # Add exogenous features to training set
+    past_holidays = school_holidays[school_holidays["WEEK_START"] < split_week_dt]
+    train_data = train_data.merge(past_holidays)
+
     ### Forecasting
     quantiles = [0.05, 0.1, 0.15, 0.2, 0.25, 0.3, 0.35, 0.4, 0.45, 0.5, 0.55, 0.6, 0.65, 0.7, 0.75, 0.8, 0.85, 0.9, 0.95]
 
@@ -74,7 +88,8 @@ def main():
         freq='W-MON', 
         time_col='WEEK_START', 
         target_col='ILITOTAL',
-        finetune_steps=100 #
+        finetune_steps=100, #
+        X_df=future_holidays
     )
 
     # Save forecasts and evaluation metrics 
@@ -83,7 +98,7 @@ def main():
     for horizon in horizons:
         ### Save forecasts
         # Define path
-        output_dir = f"output/finetuning/{state}/{horizon}week/forecasts" #
+        output_dir = f"output/finetuning+covariates/{state}/{horizon}week/forecasts" #
         output_file = f"{output_dir}/{split_week}.csv"
 
         # Create directory if it doesn't exist
@@ -123,7 +138,7 @@ def main():
 
         ### Save evaluation metrics
         # Define path
-        eval_dir = f"output/finetuning/{state}/{horizon}week/evaluation" #
+        eval_dir = f"output/finetuning+covariates/{state}/{horizon}week/evaluation" #
         eval_file = f"{eval_dir}/{split_week}.csv"
 
         # Create directory if it doesn't exist
