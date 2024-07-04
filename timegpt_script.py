@@ -74,7 +74,7 @@ def main():
         freq='W-MON', 
         time_col='WEEK_START', 
         target_col='ILITOTAL',
-        finetune_steps=350 #
+        finetune_steps=400 #
     )
 
     # Save forecasts and evaluation metrics 
@@ -83,7 +83,7 @@ def main():
     for horizon in horizons:
         ### Save forecasts
         # Define path
-        output_dir = f"output/hyperparameter/350/{state}/{horizon}week/forecasts" #
+        output_dir = f"output/hyperparameter/400/{state}/{horizon}week/forecasts" #
         output_file = f"{output_dir}/{split_week}.csv"
 
         # Create directory if it doesn't exist
@@ -123,7 +123,7 @@ def main():
 
         ### Save evaluation metrics
         # Define path
-        eval_dir = f"output/hyperparameter/350/{state}/{horizon}week/evaluation" #
+        eval_dir = f"output/hyperparameter/400/{state}/{horizon}week/evaluation" #
         eval_file = f"{eval_dir}/{split_week}.csv"
 
         # Create directory if it doesn't exist
