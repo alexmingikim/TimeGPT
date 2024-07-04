@@ -3,8 +3,7 @@ import pandas as pd
 # Variable definition
 start_date = "2017-06-01"
 end_date = "2019-06-01"
-# states = ["California", "Minnesota", "Nevada", "Utah", "Virginia", "Texas", "Wyoming"] #
-states = ["Texas"]
+states = ["California", "Minnesota", "Nevada", "Utah", "Virginia", "Wyoming"] #
 
 # Generate date range for each week in between start and end dates
 weeks = pd.date_range(start=start_date, end=end_date, freq="W-MON")
