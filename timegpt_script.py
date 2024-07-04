@@ -83,7 +83,7 @@ def main():
     for horizon in horizons:
         ### Save forecasts
         # Define path
-        output_dir = f"output/hyperparameter/{state}/{horizon}week/forecasts" #
+        output_dir = f"output/hyperparameter/100/{state}/{horizon}week/forecasts" #
         output_file = f"{output_dir}/{split_week}.csv"
 
         # Create directory if it doesn't exist
