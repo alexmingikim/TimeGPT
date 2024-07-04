@@ -3,15 +3,13 @@ import pandas as pd
 
 # Define states and forecast horizons
 # TODO: specify states and horizons as environmental variables
-# states = ['Georgia', 'New York', 'Oregon', 'Texas', 'Wyoming'] #
-states = ["California", "Minnesota", "Nevada", "Utah", "Virginia"] #
+states = ["Texas"] #
 horizons = ['1week', '4week', '13week', '26week', '52week'] #
 
 # Loop over each forecast horizon
 for state in states: 
     for horizon in horizons:
-        root_dir = f'output/{state}' #
-        # root_dir = f'output/covariates/{state}'
+        root_dir = f'output/hyperparameter/{state}' #
         eval_dir = os.path.join(root_dir, horizon, 'evaluation')
         
         # Read all csv files in evaluation directory
