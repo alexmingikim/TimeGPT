@@ -6,14 +6,14 @@ end_date = "2019-06-01"
 
 # Generate date range for each week of 2017 and 2019
 weeks = pd.date_range(start=start_date, end=end_date, freq="W-MON")
-states = ["California", "Minnesota", "Nevada", "Utah", "Virginia"] #
+states = ["California", "Texas"] #
 
 # Generate command strings for each date
 commands = []
 for state in states:
     for date in weeks:
         commands.append(
-            f"srun --unbuffered python timegpt_script.py {state} {date.strftime('%Y-%m-%d')}" #
+            f"srun --unbuffered python timegpt_script_%unweightedILI.py {state} {date.strftime('%Y-%m-%d')}" #
         )
 
 # Save command strings to a text file with an empty line at the end
