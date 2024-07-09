@@ -25,7 +25,6 @@ school_holidays = pd.read_csv("./data/school_holidays.csv")
 
 # Convert WEEK_START column to datetime
 school_holidays['WEEK_START'] = pd.to_datetime(school_holidays['WEEK_START'], dayfirst=True)
-school_holidays.head()
 
 ### Preprocessing
 
