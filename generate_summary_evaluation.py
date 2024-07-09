@@ -9,7 +9,7 @@ horizons = ['1week', '4week', '13week', '26week', '52week'] #
 # Loop over each forecast horizon
 for state in states: 
     for horizon in horizons:
-        root_dir = f'output/%UNWEIGHTED ILI/hyperparameter_tuning/300/{state}' #
+        root_dir = f'output/%UNWEIGHTED ILI/hyperparameter_tuning/400/{state}' #
         eval_dir = os.path.join(root_dir, horizon, 'evaluation')
         
         # Read all csv files in evaluation directory
