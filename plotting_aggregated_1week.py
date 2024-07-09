@@ -17,4 +17,5 @@ for state in states:
     aggregated_df.reset_index(drop=True, inplace=True)
 
     # Save aggregated forecasts as csv
-    aggregated_df.to_csv('aggregated_forecasts.csv', index=False)
+    output_file_path = os.path.join(root_dir, 'aggregated_forecasts.csv')
+    aggregated_df.to_csv(output_file_path, index=False)
