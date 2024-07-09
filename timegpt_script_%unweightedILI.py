@@ -85,7 +85,7 @@ def main():
     for horizon in horizons:
         ### Save forecasts
         # Define path
-        output_dir = f"output/%UNWEIGHTED ILI/{state}/{horizon}weeks/forecasts"
+        output_dir = f"output/%UNWEIGHTED ILI/{state}/{horizon}week/forecasts"
         output_file = f"{output_dir}/{split_week}.csv"
 
         # Create directory if it doesn't exist
@@ -125,7 +125,7 @@ def main():
 
         ### Save evaluation metrics
         # Define path
-        eval_dir = f"output/%UNWEIGHTED ILI/{state}/{horizon}weeks/evaluation"
+        eval_dir = f"output/%UNWEIGHTED ILI/{state}/{horizon}week/evaluation"
         eval_file = f"{eval_dir}/{split_week}.csv"
 
         # Create directory if it doesn't exist
