@@ -6,7 +6,8 @@ end_date = "2019-06-01"
 
 # Generate date range for each week of 2017 and 2019
 weeks = pd.date_range(start=start_date, end=end_date, freq="W-MON")
-states = ["California", "Texas"] #
+states = ["California"] #
+# states = ["Texas"] #
 
 # Generate command strings for each date
 commands = []
