@@ -1,6 +1,8 @@
 import os
 import pandas as pd
 
+# TODO: include real data
+
 states = ["California", "Texas"]
 
 for state in states:
