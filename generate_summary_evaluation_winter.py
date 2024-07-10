@@ -24,13 +24,13 @@ horizons = ['13week'] #
 # Loop over each forecast horizon
 for state in states: 
     for horizon in horizons:
-        root_dir = f'output/%UNWEIGHTED ILI/zeroshot_covariates/{state}' #
+        root_dir = f'output/%UNWEIGHTED ILI/hyperparameter_tuning/100/{state}' #
         eval_dir = os.path.join(root_dir, horizon, 'evaluation')
         
         # Read all csv files in evaluation directory
         metrics = []
         for file in os.listdir(eval_dir):
-            if file.endswith('.csv') and (file.startswith('2018-11') or file.startswith('2018-12') or file.startswith('2019-01')):
+            if file.endswith('.csv') and (file.startswith('2017-11') or file.startswith('2017-12') or file.startswith('2018-01')):
                 file_path = os.path.join(eval_dir, file)
                 df = pd.read_csv(file_path)
                 metrics.append(df[['MAE', 'MAPE', 'sMAPE', 'RMSE', 'MASE']]) #
