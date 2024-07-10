@@ -30,7 +30,7 @@ for state in states:
         # Read all csv files in evaluation directory
         metrics = []
         for file in os.listdir(eval_dir):
-            if file.endswith('.csv') and (file.startswith('2017-11') or file.startswith('2017-12') or file.startswith('2018-01')):
+            if file.endswith('.csv') and (file.startswith('2018-11') or file.startswith('2018-12') or file.startswith('2019-01')):
                 file_path = os.path.join(eval_dir, file)
                 df = pd.read_csv(file_path)
                 metrics.append(df[['MAE', 'MAPE', 'sMAPE', 'RMSE', 'MASE']]) #
