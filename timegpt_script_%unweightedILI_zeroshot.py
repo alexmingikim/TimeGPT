@@ -93,7 +93,7 @@ def main():
 
         # Add real data to forecasts df 
         real_data = test_data.head(horizon).copy()
-        forecasts['Real'] = real_data['%UNWEIGHTED ILI'].values
+        forecasts.loc[:, 'Real'] = real_data['%UNWEIGHTED ILI'].values
 
         # Reorder columns 
         cols = forecasts.columns.tolist()
@@ -149,7 +149,7 @@ def main():
 
         # Add real data to forecasts df 
         real_data = test_data.head(horizon).copy()
-        forecasts['Real'] = real_data['%UNWEIGHTED ILI'].values
+        forecasts.loc[:, 'Real'] = real_data['%UNWEIGHTED ILI'].values
 
         # Reorder columns 
         cols = forecasts.columns.tolist()
