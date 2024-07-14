@@ -5,19 +5,19 @@ import pandas as pd
 
 states = ["California", "Texas"]
 horizons = ["1week", "4week"]
-winter_months = [11, 12, 1, 2, 3, 4] #
+winter_months = [11, 12, 1, 2, 3, 4]
 
 for state in states:
-    for horizon in horizons: 
-        base_dir = f'output/%UNWEIGHTED ILI/zeroshot/all/{state}/{horizon}'
-        root_dir = f'output/%UNWEIGHTED ILI/zeroshot/all/{state}/{horizon}/forecasts'
+    for horizon in horizons:
+        base_dir = f'output/%UNWEIGHTED ILI/zeroshot/{state}/{horizon}'
+        root_dir = f'output/%UNWEIGHTED ILI/zeroshot/{state}/{horizon}/forecasts'
         aggregated_df = pd.DataFrame()
 
         for filename in os.listdir(root_dir):
             if filename.endswith(".csv"):
                 file_path = os.path.join(root_dir, filename)
                 df = pd.read_csv(file_path)
-                aggregated_df = pd.concat([aggregated_df, df])
+                aggregated_df = pd.concat([aggregated_df, df], ignore_index=True)
 
         # Convert 'Split_week' to datetime and sort by date
         aggregated_df['Split_week'] = pd.to_datetime(aggregated_df['Split_week'])
@@ -28,9 +28,9 @@ for state in states:
         filtered_forecasts = aggregated_df[aggregated_df['Month'].isin(winter_months)]
         filtered_forecasts = filtered_forecasts.drop(columns=['Month'])
 
-        # Reset index after sorting
-        aggregated_df.reset_index(drop=True, inplace=True)
+        # Reset index after filtering
+        filtered_forecasts.reset_index(drop=True, inplace=True)
 
-        # Save aggregated forecasts as csv
+        # Save filtered forecasts as csv
         output_file_path = os.path.join(base_dir, 'aggregated_forecasts_winter.csv')
-        aggregated_df.to_csv(output_file_path, index=False)
+        filtered_forecasts.to_csv(output_file_path, index=False)
