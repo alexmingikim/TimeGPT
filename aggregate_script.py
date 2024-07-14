@@ -10,7 +10,7 @@ winter_months = [11, 12, 1, 2, 3, 4]
 for state in states:
     for horizon in horizons:
         base_dir = f'output/%UNWEIGHTED ILI/zeroshot_covariates/{state}/{horizon}'
-        root_dir = f'output/%UNWEIGHTED ILI/zeroshot/{state}/{horizon}/forecasts'
+        root_dir = f'output/%UNWEIGHTED ILI/zeroshot_covariates/{state}/{horizon}/forecasts'
         aggregated_df = pd.DataFrame()
 
         for filename in os.listdir(root_dir):
