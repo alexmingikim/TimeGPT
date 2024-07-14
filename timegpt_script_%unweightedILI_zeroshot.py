@@ -85,31 +85,34 @@ def main():
     for horizon in horizons:
         ### Save forecasts
         # Define path
-        output_dir = f"output/%UNWEIGHTED ILI/zeroshot/{state}/{horizon}week/forecasts"
+        output_dir = f"output/%UNWEIGHTED ILI/zeroshot/all/{state}/{horizon}week/forecasts" #
         output_file = f"{output_dir}/{split_week}.csv"
-
-        # Create directory if it doesn't exist
         os.makedirs(output_dir, exist_ok=True)
 
         # Extract first n weeks of forecasts
         forecasts = timegpt_fcst_df.head(horizon)
 
+        # Add real data to forecasts df 
+        real_data = test_data.head(horizon).copy()
+        forecasts['Real'] = real_data['%UNWEIGHTED ILI'].values
+
+        # Reorder columns 
+        cols = forecasts.columns.tolist()
+        cols.insert(1, cols.pop(cols.index('Real')))
+        forecasts = forecasts.reindex(columns=cols)
+
         # Save forecasts as csv 
         forecasts.to_csv(output_file, index=False)
 
         ### Evaluation
-        # Merge forecasts with test set for evaluation
-        evaluation = test_data.head(horizon).copy()
-        evaluation.loc[:, 'TimeGPT'] = forecasts['TimeGPT'].values
-
         # Calculate evaluation metrics
-        mae = mean_absolute_error(evaluation['%UNWEIGHTED ILI'], evaluation['TimeGPT'])
-        mape = mean_absolute_percentage_error(evaluation['%UNWEIGHTED ILI'], evaluation['TimeGPT'])
-        smape = sMAPE(evaluation['%UNWEIGHTED ILI'], evaluation['TimeGPT'])
-        rmse = np.sqrt(mean_squared_error(evaluation['%UNWEIGHTED ILI'], evaluation['TimeGPT']))
+        mae = mean_absolute_error(forecasts['Real'], forecasts['TimeGPT'])
+        mape = mean_absolute_percentage_error(forecasts['Real'], forecasts['TimeGPT'])
+        smape = sMAPE(forecasts['Real'], forecasts['TimeGPT'])
+        rmse = np.sqrt(mean_squared_error(forecasts['Real'], forecasts['TimeGPT']))
         mase = mean_absolute_scaled_error(
-            y_true=evaluation['%UNWEIGHTED ILI'],
-            y_pred=evaluation['TimeGPT'],
+            y_true=forecasts['Real'],
+            y_pred=forecasts['TimeGPT'],
             y_train=train_data['%UNWEIGHTED ILI']
         )
 
@@ -123,19 +126,80 @@ def main():
             'MASE': mase
         }
 
-        ### Save evaluation metrics
+        ### Save evaluation
         # Define path
-        eval_dir = f"output/%UNWEIGHTED ILI/zeroshot/{state}/{horizon}week/evaluation"
+        eval_dir = f"output/%UNWEIGHTED ILI/zeroshot/all/{state}/{horizon}week/evaluation" #
         eval_file = f"{eval_dir}/{split_week}.csv"
-
-        # Create directory if it doesn't exist
         os.makedirs(eval_dir, exist_ok=True)
 
-        # Create new DataFrame with evaluation metrics
+        # Save evaluation as csv
         eval_df = pd.DataFrame(evaluation_metrics, index=[0])
-
-        # Save evaluation metrics as csv
         eval_df.to_csv(eval_file, index=False)
+
+    ### Winter analysis 
+
+    # Define winter months (November, December, January, February, March, April)
+    winter_months = [11, 12, 1, 2, 3, 4] #
+
+    for horizon in [1,4]: #
+        # Define path for storing forecasts
+        output_dir = f"output/%UNWEIGHTED ILI/zeroshot/winter/{state}/{horizon}week/forecasts" #
+        output_file = f"{output_dir}/{split_week}.csv"
+        os.makedirs(output_dir, exist_ok=True)
+
+        # Extract first n weeks of forecasts
+        forecasts = timegpt_fcst_df.head(horizon).copy()
+
+        # Add real data to forecasts df 
+        real_data = test_data.head(horizon).copy()
+        forecasts['Real'] = real_data['%UNWEIGHTED ILI'].values
+
+        # Reorder columns 
+        cols = forecasts.columns.tolist()
+        cols.insert(1, cols.pop(cols.index('Real')))
+        forecasts = forecasts.reindex(columns=cols)
+
+        # Extract forecasts for winter months 
+        forecasts['Split_week'] = pd.to_datetime(forecasts['Split_week'])
+        forecasts['Month'] = forecasts['Split_week'].dt.month
+        filtered_forecasts = forecasts[forecasts['Month'].isin(winter_months)]
+        filtered_forecasts = filtered_forecasts.drop(columns=['Month'])
+
+        # Save forecasts and do evaluation if filtered df is not empty
+        if not filtered_forecasts.empty:
+            # Save forecasts as csv 
+            filtered_forecasts.to_csv(output_file, index=False)
+
+            # Calculate evaluation metrics
+            mae = mean_absolute_error(filtered_forecasts['Real'], filtered_forecasts['TimeGPT'])
+            mape = mean_absolute_percentage_error(filtered_forecasts['Real'], filtered_forecasts['TimeGPT'])
+            smape = sMAPE(filtered_forecasts['Real'], filtered_forecasts['TimeGPT'])
+            rmse = np.sqrt(mean_squared_error(filtered_forecasts['Real'], filtered_forecasts['TimeGPT']))
+            mase = mean_absolute_scaled_error(
+                y_true=filtered_forecasts['Real'],
+                y_pred=filtered_forecasts['TimeGPT'],
+                y_train=train_data['%UNWEIGHTED ILI']
+            )
+
+            # Define evaluation metrics - MAE, MAPE, sMAPE, RMSE, MASE
+            evaluation_metrics = {
+                'Split_week': split_week,
+                'MAE': mae,
+                'MAPE': mape,
+                'sMAPE': smape,
+                'RMSE': rmse,
+                'MASE': mase
+            }
+
+            ## Save evaluation
+            # Define path
+            eval_dir = f"output/%UNWEIGHTED ILI/zeroshot/winter/{state}/{horizon}week/evaluation" #
+            eval_file = f"{eval_dir}/{split_week}.csv"
+            os.makedirs(eval_dir, exist_ok=True)
+
+            # Save evaluation as csv
+            eval_df = pd.DataFrame(evaluation_metrics, index=[0])
+            eval_df.to_csv(eval_file, index=False)
 
 if __name__ == "__main__":
     main()
