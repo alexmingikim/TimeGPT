@@ -25,7 +25,7 @@ horizons = ['1', '4', '13', '26', '52'] #
 for state in states: 
     for horizon in horizons:
         root_dir = f'output/%UNWEIGHTED ILI/zeroshot/all/{state}' #
-        eval_dir = os.path.join(root_dir, horizon+'week', 'evaluation')
+        eval_dir = os.path.join(root_dir, str(horizon)+'week', 'evaluation')
         
         # Read all csv files in evaluation directory
         metrics = []
@@ -50,13 +50,13 @@ for state in states:
             summary_metrics.index = ['Average', 'IQR']
             
             # Write summary to csv file
-            summary_file_path = os.path.join(root_dir, horizon+'week', 'summary_evaluation.csv')
+            summary_file_path = os.path.join(root_dir, str(horizon)+'week', 'summary_evaluation.csv')
             summary_metrics.to_csv(summary_file_path)
     
     ### Winter analysis
     for horizon in [1,4]:
         root_dir = f'output/%UNWEIGHTED ILI/zeroshot/winter/{state}' #
-        eval_dir = os.path.join(root_dir, horizon+'week', 'evaluation')
+        eval_dir = os.path.join(root_dir, str(horizon)+'week', 'evaluation')
         
         # Read all csv files in evaluation directory
         metrics = []
@@ -81,5 +81,5 @@ for state in states:
             summary_metrics.index = ['Average', 'IQR']
             
             # Write summary to csv file
-            summary_file_path = os.path.join(root_dir, horizon+'week', 'summary_evaluation.csv')
+            summary_file_path = os.path.join(root_dir, str(horizon)+'week', 'summary_evaluation.csv')
             summary_metrics.to_csv(summary_file_path)
