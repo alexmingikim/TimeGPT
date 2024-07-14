@@ -9,7 +9,7 @@ winter_months = [11, 12, 1, 2, 3, 4]
 
 for state in states:
     for horizon in horizons:
-        base_dir = f'output/%UNWEIGHTED ILI/zeroshot/{state}/{horizon}'
+        base_dir = f'output/%UNWEIGHTED ILI/zeroshot_covariates/{state}/{horizon}'
         root_dir = f'output/%UNWEIGHTED ILI/zeroshot/{state}/{horizon}/forecasts'
         aggregated_df = pd.DataFrame()
 
@@ -32,5 +32,5 @@ for state in states:
         filtered_forecasts.reset_index(drop=True, inplace=True)
 
         # Save filtered forecasts as csv
-        output_file_path = os.path.join(base_dir, 'aggregated_forecasts_winter.csv')
+        output_file_path = os.path.join(base_dir, '1wk_covariates.csv')
         filtered_forecasts.to_csv(output_file_path, index=False)
