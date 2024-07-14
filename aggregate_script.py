@@ -4,13 +4,13 @@ import pandas as pd
 # TODO: include real data
 
 states = ["California", "Texas"]
-horizons = ["1week", "4week"]
+horizons = ["4week"]
 winter_months = [11, 12, 1, 2, 3, 4]
 
 for state in states:
     for horizon in horizons:
-        base_dir = f'output/%UNWEIGHTED ILI/hyperparameter_tuning/100/{state}/{horizon}'
-        root_dir = f'output/%UNWEIGHTED ILI/hyperparameter_tuning/100/{state}/{horizon}/forecasts'
+        base_dir = f'output/%UNWEIGHTED ILI/zeroshot_covariates/{state}/{horizon}'
+        root_dir = f'output/%UNWEIGHTED ILI/zeroshot_covariates/{state}/{horizon}/forecasts'
         aggregated_df = pd.DataFrame()
 
         for filename in os.listdir(root_dir):
@@ -32,5 +32,5 @@ for state in states:
         filtered_forecasts.reset_index(drop=True, inplace=True)
 
         # Save filtered forecasts as csv
-        output_file_path = os.path.join(base_dir, '1wk_covariates.csv')
+        output_file_path = os.path.join(base_dir, '4wk_covariates.csv')
         filtered_forecasts.to_csv(output_file_path, index=False)
