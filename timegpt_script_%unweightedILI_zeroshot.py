@@ -33,7 +33,7 @@ def main():
     # Import data 
     df = pd.read_csv("./data/all-states-2010-2024.csv", skiprows=1)
 
-    ### Preprocessing
+    ## Preprocessing
 
     # Create Split_week column
     df["Split_week"] = pd.to_datetime(
@@ -67,7 +67,7 @@ def main():
     # Create test set
     test_data = filtered_df[filtered_df["Split_week"] >= split_week_dt]
 
-    ### Forecasting
+    ## Forecasting
     quantiles = [0.05, 0.1, 0.15, 0.2, 0.25, 0.3, 0.35, 0.4, 0.45, 0.5, 0.55, 0.6, 0.65, 0.7, 0.75, 0.8, 0.85, 0.9, 0.95]
 
     timegpt_fcst_df = nixtla_client.forecast(
@@ -79,12 +79,11 @@ def main():
         target_col='%UNWEIGHTED ILI'
     )
 
-    # Save forecasts and evaluation metrics 
-    horizons = [1,4,13,26,52]
+    # Prediction horizons
+    horizons = [1,4,13,26,52] #
 
     for horizon in horizons:
-        ### Save forecasts
-        # Define path
+        # Define path for storing forecasts
         output_dir = f"output/%UNWEIGHTED ILI/zeroshot/all/{state}/{horizon}week/forecasts" #
         output_file = f"{output_dir}/{split_week}.csv"
         os.makedirs(output_dir, exist_ok=True)
@@ -104,7 +103,7 @@ def main():
         # Save forecasts as csv 
         forecasts.to_csv(output_file, index=False)
 
-        ### Evaluation
+        ## Evaluation
         # Calculate evaluation metrics
         mae = mean_absolute_error(forecasts['Real'], forecasts['TimeGPT'])
         mape = mean_absolute_percentage_error(forecasts['Real'], forecasts['TimeGPT'])
@@ -116,7 +115,6 @@ def main():
             y_train=train_data['%UNWEIGHTED ILI']
         )
 
-        # Define evaluation metrics - MAE, MAPE, sMAPE, RMSE, MASE
         evaluation_metrics = {
             'Split_week': split_week,
             'MAE': mae,
@@ -126,13 +124,12 @@ def main():
             'MASE': mase
         }
 
-        ### Save evaluation
-        # Define path
+        # Define path for storing evaluation metrics
         eval_dir = f"output/%UNWEIGHTED ILI/zeroshot/all/{state}/{horizon}week/evaluation" #
         eval_file = f"{eval_dir}/{split_week}.csv"
         os.makedirs(eval_dir, exist_ok=True)
 
-        # Save evaluation as csv
+        # Save evaluation mertrics as csv
         eval_df = pd.DataFrame(evaluation_metrics, index=[0])
         eval_df.to_csv(eval_file, index=False)
 
@@ -181,7 +178,6 @@ def main():
                 y_train=train_data['%UNWEIGHTED ILI']
             )
 
-            # Define evaluation metrics - MAE, MAPE, sMAPE, RMSE, MASE
             evaluation_metrics = {
                 'Split_week': split_week,
                 'MAE': mae,
@@ -191,13 +187,12 @@ def main():
                 'MASE': mase
             }
 
-            ## Save evaluation
-            # Define path
+            # Define path for storing evaluation metrics
             eval_dir = f"output/%UNWEIGHTED ILI/zeroshot/winter/{state}/{horizon}week/evaluation" #
             eval_file = f"{eval_dir}/{split_week}.csv"
             os.makedirs(eval_dir, exist_ok=True)
 
-            # Save evaluation as csv
+            # Save evaluation metrics as csv
             eval_df = pd.DataFrame(evaluation_metrics, index=[0])
             eval_df.to_csv(eval_file, index=False)
 
