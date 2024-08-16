@@ -1,0 +1,8 @@
+pandas 
+numpy 
+torchmetrics 
+torch 
+python-dotenv 
+nixtla 
+scikit-learn 
+sktime
