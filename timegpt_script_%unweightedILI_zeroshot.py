@@ -105,7 +105,7 @@ def main():
 
     for horizon in horizons:
         # location to store forecasts
-        output_dir = f"out_ili_%/point_prediction/{state}/{horizon}week/forecasts" #
+        output_dir = f"out_ili_%/{state}/{horizon}week/forecasts" #
         output_file = f"{output_dir}/{split_week}.csv"
         os.makedirs(output_dir, exist_ok=True)
 
@@ -115,15 +115,34 @@ def main():
         # save forecasts as csv 
         forecasts.to_csv(output_file, index=False)
 
-        # calculate evaluation metrics - MAE, MAPE, sMAPE, RMSE, MASE
+        ## evaluation case 1: comparing only the LAST point prediction for given horizon
         real_last = forecasts['Real'].iloc[-1] # point prediction (only compare last row)
         timegpt_last = forecasts['TimeGPT'].iloc[-1]
 
-        mae = abs(real_last - timegpt_last)
-        mape = abs((real_last - timegpt_last) / real_last) * 100
-        smape = sMAPE(timegpt_last, real_last)
-        rmse = np.sqrt((real_last - timegpt_last)**2)
+        mae_point = abs(real_last - timegpt_last)
+        mape_point = abs((real_last - timegpt_last) / real_last)
+        smape_point = sMAPE(timegpt_last, real_last)
+        rmse_point = np.sqrt((real_last - timegpt_last)**2)
+        mase_point = mean_absolute_scaled_error(
+            y_true=forecasts['Real'],
+            y_pred=forecasts['TimeGPT'],
+            y_train=train_data['%UNWEIGHTED ILI']
+        )
 
+        evaluation_metrics_point = {
+            'Split Week': split_week,
+            'MAE': mae_point,
+            'MAPE': mape_point,
+            'sMAPE': smape_point,
+            'RMSE': rmse_point,
+            'MASE': mase_point
+        }
+
+        ## evaluation case 2: comparing ALL predictions for given horizon and then averaging
+        mae = mean_absolute_error(forecasts['Real'], forecasts['TimeGPT'])
+        mape = mean_absolute_percentage_error(forecasts['Real'], forecasts['TimeGPT'])
+        smape = sMAPE(forecasts['Real'], forecasts['TimeGPT'])
+        rmse = np.sqrt(mean_squared_error(forecasts['Real'], forecasts['TimeGPT']))
         mase = mean_absolute_scaled_error(
             y_true=forecasts['Real'],
             y_pred=forecasts['TimeGPT'],
@@ -131,7 +150,7 @@ def main():
         )
 
         evaluation_metrics = {
-            'Split Week': split_week,
+            'Split_week': split_week,
             'MAE': mae,
             'MAPE': mape,
             'sMAPE': smape,
@@ -140,13 +159,21 @@ def main():
         }
 
         # location to store evaluation metrics
-        eval_dir = f"out_ili_%/point_prediction/{state}/{horizon}week/evaluation"
-        eval_file = f"{eval_dir}/{split_week}.csv"
-        os.makedirs(eval_dir, exist_ok=True)
+        # point prediction
+        eval_dir_point = f"out_ili_%/{state}/{horizon}week/evaluation/point_prediction"
+        eval_file_point = f"{eval_dir_point}/{split_week}.csv"
+        os.makedirs(eval_dir_point, exist_ok=True)
+
+        # averaged
+        eval_dir_all = f"out_ili_%/{state}/{horizon}week/evaluation/averaged"
+        eval_file_all = f"{eval_dir_all}/{split_week}.csv"
+        os.makedirs(eval_dir_all, exist_ok=True)
 
         # save evaluations as csv
-        eval_df = pd.DataFrame(evaluation_metrics, index=[0])
-        eval_df.to_csv(eval_file, index=False)
+        eval_df_point = pd.DataFrame(evaluation_metrics_point, index=[0])
+        eval_df_point.to_csv(eval_file_point, index=False)
+        eval_df_all = pd.DataFrame(evaluation_metrics, index=[0])
+        eval_df_all.to_csv(eval_file_all, index=False)
 
     ## Winter analysis 
 
@@ -155,7 +182,7 @@ def main():
 
     for horizon in [1,4,13]:
         # location to store forecasts
-        output_dir = f"out_ili_%/point_prediction/winter/{state}/{horizon}week/forecasts"
+        output_dir = f"out_ili_%/winter_analysis/{state}/{horizon}week/forecasts"
         output_file = f"{output_dir}/{split_week}.csv"
         os.makedirs(output_dir, exist_ok=True)
 
@@ -173,15 +200,34 @@ def main():
             # save forecasts as csv 
             filtered_data.to_csv(output_file, index=False)
 
-            # calculate evaluation metrics - MAE, MAPE, sMAPE, RMSE, MASE
+            ## evaluation case 1: comparing only the LAST point prediction for given horizon
             real_last = forecasts['Real'].iloc[-1] # point prediction (only compare last row)
             timegpt_last = forecasts['TimeGPT'].iloc[-1]
 
-            mae = abs(real_last - timegpt_last)
-            mape = abs((real_last - timegpt_last) / real_last) * 100
-            smape = sMAPE(timegpt_last, real_last)
-            rmse = np.sqrt((real_last - timegpt_last)**2)
+            mae_point = abs(real_last - timegpt_last)
+            mape_point = abs((real_last - timegpt_last) / real_last)
+            smape_point = sMAPE(timegpt_last, real_last)
+            rmse_point = np.sqrt((real_last - timegpt_last)**2)
+            mase_point = mean_absolute_scaled_error(
+                y_true=forecasts['Real'],
+                y_pred=forecasts['TimeGPT'],
+                y_train=train_data['%UNWEIGHTED ILI']
+            )
 
+            evaluation_metrics_point = {
+                'Split Week': split_week,
+                'MAE': mae_point,
+                'MAPE': mape_point,
+                'sMAPE': smape_point,
+                'RMSE': rmse_point,
+                'MASE': mase_point
+            }
+
+            ## case 2: comparing ALL predictions for given horizon
+            mae = mean_absolute_error(forecasts['Real'], forecasts['TimeGPT'])
+            mape = mean_absolute_percentage_error(forecasts['Real'], forecasts['TimeGPT'])
+            smape = sMAPE(forecasts['Real'], forecasts['TimeGPT'])
+            rmse = np.sqrt(mean_squared_error(forecasts['Real'], forecasts['TimeGPT']))
             mase = mean_absolute_scaled_error(
                 y_true=forecasts['Real'],
                 y_pred=forecasts['TimeGPT'],
@@ -189,7 +235,7 @@ def main():
             )
 
             evaluation_metrics = {
-                'Split Week': split_week,
+                'Split_week': split_week,
                 'MAE': mae,
                 'MAPE': mape,
                 'sMAPE': smape,
@@ -198,13 +244,21 @@ def main():
             }
 
             # location to store evaluation metrics
-            eval_dir = f"out_ili_%/point_prediction/winter/{state}/{horizon}week/evaluation"
-            eval_file = f"{eval_dir}/{split_week}.csv"
-            os.makedirs(eval_dir, exist_ok=True)
+            # point prediction
+            eval_dir_point = f"out_ili_%/winter_analysis/{state}/{horizon}week/evaluation/point_prediction"
+            eval_file_point = f"{eval_dir_point}/{split_week}.csv"
+            os.makedirs(eval_dir_point, exist_ok=True)
+
+            # averaged
+            eval_dir_all = f"out_ili_%/winter_analysis/{state}/{horizon}week/evaluation/averaged"
+            eval_file_all = f"{eval_dir_all}/{split_week}.csv"
+            os.makedirs(eval_dir_all, exist_ok=True)
 
             # save evaluations as csv
-            eval_df = pd.DataFrame(evaluation_metrics, index=[0])
-            eval_df.to_csv(eval_file, index=False)
+            eval_df_point = pd.DataFrame(evaluation_metrics_point, index=[0])
+            eval_df_point.to_csv(eval_file_point, index=False)
+            eval_df_all = pd.DataFrame(evaluation_metrics, index=[0])
+            eval_df_all.to_csv(eval_file_all, index=False)
         
 if __name__ == "__main__":
     main()
