@@ -8,7 +8,7 @@ def compute_iqr(column):
 
 # define states and forecast horizons
 # TODO: specify states and horizons as environmental variables
-states = ["Oregon"] #
+states = ["Wyoming"] #
 horizons = ['1', '4', '13', '26', '52'] #
 
 for state in states: 
