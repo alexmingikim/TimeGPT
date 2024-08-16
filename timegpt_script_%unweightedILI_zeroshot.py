@@ -190,8 +190,8 @@ def main():
         forecasts = timegpt_fcst_df.head(horizon).copy()
 
         # extract forecasts for winter months 
-        forecasts['Split Week'] = pd.to_datetime(forecasts['Split Week'])
-        forecasts['Month'] = forecasts['Split Week'].dt.month
+        forecasts['Prediction Week'] = pd.to_datetime(forecasts['Prediction Week'])
+        forecasts['Month'] = forecasts['Prediction Week'].dt.month
         filtered_data = forecasts[forecasts['Month'].isin(winter_months)]
         filtered_data = filtered_data.drop(columns=['Month'])
 
