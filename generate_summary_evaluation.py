@@ -14,8 +14,8 @@ horizons = ['1', '4', '13', '26', '52'] #
 for state in states: 
     for horizon in horizons:
         root_dir = f'out_ili_%/{state}' 
-        # eval_dir = os.path.join(root_dir, str(horizon)+'week', 'evaluation', 'averaged') # 
-        eval_dir = os.path.join(root_dir, str(horizon)+'week', 'evaluation', 'point_prediction') #
+        eval_dir = os.path.join(root_dir, str(horizon)+'week', 'evaluation', 'averaged') # 
+        # eval_dir = os.path.join(root_dir, str(horizon)+'week', 'evaluation', 'point_prediction') #
         
         # read all csv files in evaluation directory
         metrics = []
@@ -36,15 +36,15 @@ for state in states:
             summary_metrics = pd.concat([avg_metrics, iqr_metrics])
             summary_metrics.index = ['Average', 'IQR']
             # write to csv
-            # summary_file_path = os.path.join(root_dir, str(horizon)+'week', 'evaluation', 'summary_averaged.csv') #
-            summary_file_path = os.path.join(root_dir, str(horizon)+'week', 'evaluation', 'summary_point_prediction.csv') #
+            summary_file_path = os.path.join(root_dir, str(horizon)+'week', 'evaluation', 'summary_averaged.csv') #
+            # summary_file_path = os.path.join(root_dir, str(horizon)+'week', 'evaluation', 'summary_point_prediction.csv') #
             summary_metrics.to_csv(summary_file_path)
     
     ## Winter analysis
     for horizon in [1,4,13]:
         root_dir = f'out_ili_%/winter_analysis/{state}'
-        # eval_dir = os.path.join(root_dir, str(horizon)+'week', 'evaluation', 'averaged') #
-        eval_dir = os.path.join(root_dir, str(horizon)+'week', 'evaluation', 'point_prediction') # 
+        eval_dir = os.path.join(root_dir, str(horizon)+'week', 'evaluation', 'averaged') #
+        # eval_dir = os.path.join(root_dir, str(horizon)+'week', 'evaluation', 'point_prediction') # 
         
         # read all csv files in evaluation directory
         metrics = []
@@ -65,6 +65,6 @@ for state in states:
             summary_metrics = pd.concat([avg_metrics, iqr_metrics])
             summary_metrics.index = ['Average', 'IQR']
             # write to csv
-            # summary_file_path = os.path.join(root_dir, str(horizon)+'week', 'evaluation', 'summary_averaged.csv') #
-            summary_file_path = os.path.join(root_dir, str(horizon)+'week', 'evaluation', 'summary_point_prediction.csv') #
+            summary_file_path = os.path.join(root_dir, str(horizon)+'week', 'evaluation', 'summary_averaged.csv') #
+            # summary_file_path = os.path.join(root_dir, str(horizon)+'week', 'evaluation', 'summary_point_prediction.csv') #
             summary_metrics.to_csv(summary_file_path)
