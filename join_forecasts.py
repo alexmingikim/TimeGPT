@@ -2,8 +2,8 @@ import os
 import pandas as pd
 
 # directory containing the CSV files
-input_directory = './out_ili_%/California/1week/forecasts' #
-output_file = './out_ili_%/California/1week/joined_forecasts.csv' #
+input_directory = './out_ili_%/California/4week/forecasts' #
+output_file = './out_ili_%/California/4week/joined_forecasts.csv' #
 
 # list to store data from each CSV file
 all_data = []
