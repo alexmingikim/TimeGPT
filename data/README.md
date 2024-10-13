@@ -1,1 +1,1 @@
-# Upload US ILI dataset (https://gis.cdc.gov/grasp/fluview/fluportaldashboard.html) here
+Upload US ILI dataset (https://gis.cdc.gov/grasp/fluview/fluportaldashboard.html) here
