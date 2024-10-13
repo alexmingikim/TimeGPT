@@ -1,4 +1,5 @@
 import os
+from dotenv import load_dotenv
 import pandas as pd
 import numpy as np
 
@@ -6,10 +7,12 @@ def compute_iqr(column):
     q3, q1 = np.percentile(column, [75 ,25])
     return q3 - q1
 
-# define states and forecast horizons
-# TODO: specify states and horizons as environmental variables
-states = ["Texas"] #
-horizons = ['1', '4', '13', '26', '52'] #
+# load .env file
+load_dotenv()
+
+# read states and forecast horizons from the environment variables
+states = os.getenv("STATES").split(",")
+horizons = os.getenv("HORIZONS").split(",")
 
 for state in states: 
     for horizon in horizons:

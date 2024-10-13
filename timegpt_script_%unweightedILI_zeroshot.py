@@ -4,7 +4,6 @@ from torchmetrics.functional import symmetric_mean_absolute_percentage_error
 import torch
 import re
 from dotenv import load_dotenv
-load_dotenv()
 from nixtla import NixtlaClient
 nixtla_client = NixtlaClient()
 from sys import *
@@ -29,6 +28,8 @@ def sMAPE(forecast, real):
     return np.float64(smape)
 
 def main():
+    load_dotenv()
+    
     # get arguments
     state = argv[1]
     split_week = datetime.strptime(argv[2], "%Y-%m-%d").date()
@@ -101,7 +102,7 @@ def main():
 
     ## Store forecasts and evaluation metrics
 
-    horizons = [1,4,13,26,52]
+    horizons = os.getenv("HORIZONS").split(",")
 
     for horizon in horizons:
         # location to store forecasts

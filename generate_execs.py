@@ -1,14 +1,19 @@
+import os
+from dotenv import load_dotenv
 import pandas as pd
 
-# Define start and end dates
-start_date = "2017-06-01"
-end_date = "2019-06-01"
+# load .env file
+load_dotenv()
 
-# Generate date range for each week of 2017 and 2019
+# read the start and end dates and states of interest from the environment variables
+start_date = os.getenv("START_DATE")
+end_date = os.getenv("END_DATE")
+states = os.getenv("STATES").split(",")
+
+# generate date range for each week between start_date and end_date
 weeks = pd.date_range(start=start_date, end=end_date, freq="W-MON")
-states = ["Texas"] #
 
-# Generate command strings for each date
+# generate command strings for each week
 commands = []
 for state in states:
     for date in weeks:
@@ -16,6 +21,6 @@ for state in states:
             f"srun --unbuffered python timegpt_script_%unweightedILI_zeroshot.py {state} {date.strftime('%Y-%m-%d')}" #
         )
 
-# Save command strings to a text file with an empty line at the end
+# save command strings to a text file with an empty line at the end
 with open("execs/train_models", "w") as file:
     file.write("\n".join(commands) + "\n")
