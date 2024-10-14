@@ -37,8 +37,20 @@ def main():
     # process state name (add a space before any uppercase letter that is not at the start e.g. New York)
     state = re.sub(r'(?<!^)(?=[A-Z])', ' ', state)
 
-    # import data 
-    data = pd.read_csv("./data/all-states-2010-2024.csv", skiprows=1) 
+    ## import data 
+    data_directory = "./data/"
+
+    # Get a list of all CSV files in the directory
+    csv_files = [file for file in os.listdir(data_directory) if file.endswith('.csv')]
+    if len(csv_files) == 0:
+        print(f"No CSV files found in '{data_directory}' directory.")
+    else:
+        # select first CSV file
+        file_name = os.path.join(data_directory, csv_files[0])
+        print(f"Reading file: {file_name}")
+        
+        # load CSV file
+        data = pd.read_csv(file_name, skiprows=1) 
 
     ## Preprocessing
 
